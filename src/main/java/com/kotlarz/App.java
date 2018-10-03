@@ -1,29 +1,41 @@
 package com.kotlarz;
 
-import com.kotlarz.service.PekaService;
-import spark.Service;
+import com.kotlarz.server.Server;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 public class App
 {
-    private static PekaService pekaService = new PekaService();
-
     public static void main( String[] args )
     {
-        Service service = Service.ignite();
-        service.port( 8888 );
+        parseArgs( args, () -> Server.start() );
+    }
 
-        service.before( ( request, response ) -> {
-            response.header( "Access-Control-Allow-Origin", "*" );
-            response.header( "Content-Encoding", "gzip" );
-        } );
+    private static void parseArgs( String[] args, Runnable handler )
+    {
+        ArgumentParser parser = ArgumentParsers.newFor( "Peka proxy" ).build()
+                        .defaultHelp( true )
+                        .description( "Proxies requests to PEKA VM web service" );
+        parser.addArgument( "-k", "--keystore" )
+                        .required( true )
+                        .help( "Keystore path" );
+        parser.addArgument( "-p", "--password" )
+                        .required( true )
+                        .help( "Keystore password" );
 
-        service.get( "/", ( request, response ) -> {
-            String command = request.queryParams( "command" );
-            String pattern = request.queryParamOrDefault( "pattern", "" );
+        try
+        {
+            Namespace namespace = parser.parseArgs( args );
+            AppArguments.KEYSTORE_PATH = namespace.get( "keystore" ).toString();
+            AppArguments.KEYSTORE_PASSWORD = namespace.get( "password" ).toString();
 
-            String content = pekaService.runCommand( command, pattern );
-            response.type( "application/json" );
-            return content;
-        } );
+            handler.run();
+        }
+        catch ( ArgumentParserException e )
+        {
+            parser.handleError( e );
+        }
     }
 }
