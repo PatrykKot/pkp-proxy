@@ -15,7 +15,8 @@ public class GuiceModule
                     PekaProxyHandler.class,
                     TransportAdapterService.class,
                     TransportService.class,
-                    TransportStopHandler.class
+                    TransportStopHandler.class,
+                    PekaProxyService.class
     };
 
     @Override

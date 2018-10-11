@@ -67,7 +67,7 @@ public class PekaProxyService
         params.add( new BasicNameValuePair( COMMAND_PARAM, command ) );
 
         Map<String, String> patternMap = new HashMap<>();
-        patternMap.put( PATTERN_PARAM, pattern );
+        patternMap.put( "pattern", pattern );
 
         params.add( new BasicNameValuePair( PATTERN_PARAM, mapper.writeValueAsString( patternMap ) ) );
         return params;

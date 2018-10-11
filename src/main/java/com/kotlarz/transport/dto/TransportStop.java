@@ -16,15 +16,9 @@ public class TransportStop
 
     private String name;
 
-    private String type; // TODO ENUM
-
     private Double latitude;
 
     private Double longitude;
-
-    private String zone; // TODO ENUM;
-
-    private String routeType; // TODO ENUM
 
     private List<String> transportLines;
 
@@ -33,11 +27,8 @@ public class TransportStop
         return TransportStop.builder()
                         .id( transportFeature.getId() )
                         .name( transportFeature.getProperties().getStop_name() )
-                        .type( transportFeature.getType() )
                         .latitude( transportFeature.getGeometry().getCoordinates().get( 1 ) )
                         .longitude( transportFeature.getGeometry().getCoordinates().get( 0 ) )
-                        .zone( transportFeature.getProperties().getZone() )
-                        .routeType( transportFeature.getProperties().getRoute_type() )
                         .transportLines( toTransportLines( transportFeature.getProperties().getHeadsigns() ) )
                         .build();
     }
