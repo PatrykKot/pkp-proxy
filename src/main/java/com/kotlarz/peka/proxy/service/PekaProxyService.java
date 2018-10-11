@@ -14,7 +14,7 @@ import spark.utils.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Bean
@@ -47,15 +47,11 @@ public class PekaProxyService {
     }
 
     private HttpPost buildPost(String command, String argumentName, String argument)
-            throws UnsupportedEncodingException, JsonProcessingException {
+            throws JsonProcessingException {
         HttpPost post = new HttpPost(buildUrl());
-        setHeaders(post);
-        post.setEntity(new UrlEncodedFormEntity(buildParams(command, argumentName, argument)));
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(buildParams(command, argumentName, argument), StandardCharsets.UTF_8);
+        post.setEntity(entity);
         return post;
-    }
-
-    private void setHeaders(HttpPost post) {
-        post.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
     }
 
     private List<NameValuePair> buildParams(String command, String argumentName, String argument)

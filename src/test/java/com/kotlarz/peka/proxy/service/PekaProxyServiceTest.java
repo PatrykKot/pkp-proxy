@@ -13,7 +13,7 @@ public class PekaProxyServiceTest {
 
     private static final String TEST_ARGUMENT_NAME = "pattern";
 
-    private static final String TEST_ARGUMENT = "szym";
+    private static final String TEST_ARGUMENT = "bałt";
 
     private PekaProxyService pekaProxyService;
 
@@ -33,7 +33,7 @@ public class PekaProxyServiceTest {
         Boolean found = false;
         for (int i = 0; i < successArray.length(); i++) {
             JSONObject item = successArray.getJSONObject(i);
-            if (item.getString("name").toLowerCase().contains("szym")) {
+            if (item.getString("name").toLowerCase().contains(TEST_ARGUMENT)) {
                 found = true;
             }
         }
