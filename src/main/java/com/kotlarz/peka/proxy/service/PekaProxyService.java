@@ -1,5 +1,6 @@
-package com.kotlarz.service;
+package com.kotlarz.peka.proxy.service;
 
+import lombok.SneakyThrows;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -10,12 +11,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import spark.utils.Assert;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-public class PekaService
+public class PekaProxyService
 {
     private static final String URL = "http://www.peka.poznan.pl/vm/method.vm";
 
@@ -27,8 +27,8 @@ public class PekaService
 
     private HttpClient client = HttpClientBuilder.create().build();
 
+    @SneakyThrows
     public String runCommand( String command, String pattern )
-                    throws IOException
     {
         Assert.hasLength( command, "Command cannot be empty" );
 
@@ -37,10 +37,10 @@ public class PekaService
         return convertStreamToString( response.getEntity().getContent() );
     }
 
-    String convertStreamToString( InputStream stream )
+    private String convertStreamToString( InputStream stream )
     {
-        Scanner s = new Scanner( stream ).useDelimiter( "\\A" );
-        return s.hasNext() ? s.next() : "";
+        Scanner scanner = new Scanner( stream ).useDelimiter( "\\A" );
+        return scanner.hasNext() ? scanner.next() : "";
     }
 
     private HttpPost buildPost( String command, String pattern )
