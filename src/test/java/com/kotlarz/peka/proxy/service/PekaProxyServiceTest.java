@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class PekaProxyServiceTest
 {
     private static final String TEST_COMMAND = "getStopPoints";
@@ -21,6 +23,7 @@ public class PekaProxyServiceTest
 
     @Test
     public void test()
+                    throws IOException
     {
         String content = pekaProxyService.runCommand( TEST_COMMAND, TEST_PATTERN );
         JSONObject json = new JSONObject( content );

@@ -1,6 +1,7 @@
 package com.kotlarz.peka.proxy.service;
 
-import lombok.SneakyThrows;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -8,9 +9,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 import spark.utils.Assert;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -27,8 +28,10 @@ public class PekaProxyService
 
     private HttpClient client = HttpClientBuilder.create().build();
 
-    @SneakyThrows
+    private ObjectMapper mapper = new ObjectMapper();
+
     public String runCommand( String command, String pattern )
+                    throws IOException
     {
         Assert.hasLength( command, "Command cannot be empty" );
 
@@ -44,7 +47,7 @@ public class PekaProxyService
     }
 
     private HttpPost buildPost( String command, String pattern )
-                    throws UnsupportedEncodingException
+                    throws UnsupportedEncodingException, JsonProcessingException
     {
         HttpPost post = new HttpPost( buildUrl() );
         setHeaders( post );
@@ -58,6 +61,7 @@ public class PekaProxyService
     }
 
     private List<NameValuePair> buildParams( String command, String pattern )
+                    throws JsonProcessingException
     {
         List<NameValuePair> params = new LinkedList<>();
         params.add( new BasicNameValuePair( COMMAND_PARAM, command ) );
@@ -65,7 +69,7 @@ public class PekaProxyService
         Map<String, String> patternMap = new HashMap<>();
         patternMap.put( PATTERN_PARAM, pattern );
 
-        params.add( new BasicNameValuePair( PATTERN_PARAM, new JSONObject( patternMap ).toString() ) );
+        params.add( new BasicNameValuePair( PATTERN_PARAM, mapper.writeValueAsString( patternMap ) ) );
         return params;
     }
 
