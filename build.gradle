@@ -20,6 +20,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
     compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
 

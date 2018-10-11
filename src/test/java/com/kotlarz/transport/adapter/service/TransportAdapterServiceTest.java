@@ -18,7 +18,7 @@ public class TransportAdapterServiceTest
     }
 
     @Test
-    public void test()
+    public void getTransportFeaturesTest()
     {
         List<TransportFeature> features = transportAdapterService.getTransportFeatures();
         Assert.assertFalse( features.isEmpty() );

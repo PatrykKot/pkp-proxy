@@ -1,6 +1,7 @@
 package com.kotlarz.transport.adapter.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kotlarz.config.container.Bean;
 import com.kotlarz.transport.adapter.dto.TransportFeature;
 import com.kotlarz.transport.adapter.dto.TransportResponse;
 import lombok.SneakyThrows;
@@ -11,6 +12,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.util.List;
 
+@Bean
 public class TransportAdapterService
 {
     private static final String URL = "http://www.poznan.pl/mim/plan/map_service.html?mtype=pub_transport&co=cluster";
@@ -20,8 +22,7 @@ public class TransportAdapterService
     private ObjectMapper mapper = new ObjectMapper();
 
     @SneakyThrows
-    public List<TransportFeature> getTransportFeatures()
-    {
+    public List<TransportFeature> getTransportFeatures() {
         HttpGet get = new HttpGet( URL );
         HttpResponse response = client.execute( get );
         return mapper.readValue( response.getEntity().getContent(), TransportResponse.class ).getFeatures();
