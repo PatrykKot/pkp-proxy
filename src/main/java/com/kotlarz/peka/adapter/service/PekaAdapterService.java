@@ -5,10 +5,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.kotlarz.config.container.Bean;
-import com.kotlarz.peka.adapter.dto.Bollard;
-import com.kotlarz.peka.adapter.dto.StopPoint;
-import com.kotlarz.peka.adapter.dto.Time;
-import com.kotlarz.peka.exception.PekaProxyException;
+import com.kotlarz.peka.adapter.dto.PekaBollard;
+import com.kotlarz.peka.adapter.dto.PekaStopPoint;
+import com.kotlarz.peka.adapter.dto.PekaTime;
+import com.kotlarz.peka.adapter.exception.PekaProxyException;
 import com.kotlarz.peka.proxy.service.PekaProxyService;
 import lombok.SneakyThrows;
 import org.json.JSONArray;
@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,29 +38,29 @@ public class PekaAdapterService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private LoadingCache<String, List<StopPoint>> stopPointsCache = CacheBuilder.newBuilder()
+    private LoadingCache<String, List<PekaStopPoint>> stopPointsCache = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.HOURS)
-            .build(new CacheLoader<String, List<StopPoint>>() {
+            .build(new CacheLoader<String, List<PekaStopPoint>>() {
                 @Override
-                public List<StopPoint> load(String name) {
+                public List<PekaStopPoint> load(String name) {
                     return loadStopPointsByName(name);
                 }
             });
 
-    private LoadingCache<String, List<Bollard>> bollardsCache = CacheBuilder.newBuilder()
+    private LoadingCache<String, List<PekaBollard>> bollardsCache = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.HOURS)
-            .build(new CacheLoader<String, List<Bollard>>() {
+            .build(new CacheLoader<String, List<PekaBollard>>() {
                 @Override
-                public List<Bollard> load(String stopPointName) {
+                public List<PekaBollard> load(String stopPointName) {
                     return loadBollards(stopPointName);
                 }
             });
 
-    private LoadingCache<String, Time> timeCache = CacheBuilder.newBuilder()
+    private LoadingCache<String, PekaTime> timeCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.SECONDS)
-            .build(new CacheLoader<String, Time>() {
+            .build(new CacheLoader<String, PekaTime>() {
                 @Override
-                public Time load(String bollardTag) {
+                public PekaTime load(String bollardTag) {
                     return loadTimes(bollardTag);
                 }
             });
@@ -70,34 +71,39 @@ public class PekaAdapterService {
     }
 
     @SneakyThrows
-    public List<StopPoint> getStopPointsByName(String name) {
+    public List<PekaStopPoint> getStopPointsByName(String name) {
         return stopPointsCache.get(name);
     }
 
-    private List<StopPoint> loadStopPointsByName(String name) {
+    private List<PekaStopPoint> loadStopPointsByName(String name) {
         JSONObject response = execute(GET_STOP_POINTS_COMMAND, GET_STOP_POINTS_ARGUMENT_NAME, name);
-        return Arrays.asList(asType(response.getJSONArray("success"), StopPoint[].class));
+        return Arrays.asList(asType(response.getJSONArray("success"), PekaStopPoint[].class));
     }
 
     @SneakyThrows
-    public List<Bollard> getBollardsByStopPoint(String stopPointName) {
+    public List<PekaBollard> getBollardsByStopPoint(String stopPointName) {
         return bollardsCache.get(stopPointName);
     }
 
-    private List<Bollard> loadBollards(String stopPointName) {
+    private List<PekaBollard> loadBollards(String stopPointName) {
         JSONObject response = execute(GET_BOLLARDS_BY_STOP_POINT_COMMAND, GET_BOLLARDS_BY_STOP_POINTS_ARGUMENT_NAME, stopPointName);
-        JSONArray array = response.getJSONObject("success").getJSONArray("bollards");
-        return Arrays.asList(asType(array, Bollard[].class));
+        JSONObject successObject = response.getJSONObject("success");
+        if (successObject.has("bollards")) {
+            JSONArray array = successObject.getJSONArray("bollards");
+            return Arrays.asList(asType(array, PekaBollard[].class));
+        } else {
+            return new LinkedList<>();
+        }
     }
 
     @SneakyThrows
-    public Time getTimesByBollard(String bollardTag) {
+    public PekaTime getTimesByBollard(String bollardTag) {
         return timeCache.get(bollardTag);
     }
 
-    private Time loadTimes(String bollardTag) {
+    private PekaTime loadTimes(String bollardTag) {
         JSONObject response = execute(GET_TIMES_BY_BOLLARD_COMMAND, GET_TIMES_BY_BOLLARD_ARGUMENT_NAME, bollardTag);
-        return asType(response.getJSONObject("success"), Time.class);
+        return asType(response.getJSONObject("success"), PekaTime.class);
     }
 
     @SneakyThrows

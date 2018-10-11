@@ -1,4 +1,4 @@
-package com.kotlarz.peka.exception;
+package com.kotlarz.peka.adapter.exception;
 
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;

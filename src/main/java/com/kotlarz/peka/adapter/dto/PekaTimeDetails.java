@@ -3,7 +3,7 @@ package com.kotlarz.peka.adapter.dto;
 import lombok.Data;
 
 @Data
-public class TimeDetails
+public class PekaTimeDetails
 {
     private Boolean realTime;
 

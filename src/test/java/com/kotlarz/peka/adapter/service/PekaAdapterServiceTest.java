@@ -1,6 +1,6 @@
 package com.kotlarz.peka.adapter.service;
 
-import com.kotlarz.peka.adapter.dto.Time;
+import com.kotlarz.peka.adapter.dto.PekaTime;
 import com.kotlarz.peka.proxy.service.PekaProxyService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class PekaAdapterServiceTest {
 
     @Test
     public void getTimesByBollardTest() {
-        Time time = pekaAdapterService.getTimesByBollard("AWF03");
+        PekaTime time = pekaAdapterService.getTimesByBollard("AWF03");
         Assert.assertTrue(time.getBollard().getSymbol().equals("AWF03"));
         Assert.assertFalse(time.getTimes().isEmpty());
     }
