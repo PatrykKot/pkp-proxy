@@ -51,4 +51,17 @@ public class TransportService
 
         return Math.sqrt( longDiff * longDiff + latDiff * latDiff );
     }
+
+    public List<String> getClosestNames(Double longitude, Double latitude, long limit) {
+        return getAllStops().stream()
+                .sorted((stop1, stop2) -> {
+                    Double distance1 = getDistance(longitude, latitude, stop1);
+                    Double distance2 = getDistance(longitude, latitude, stop2);
+                    return distance1.compareTo(distance2);
+                })
+                .map(TransportStop::getName)
+                .distinct()
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
 }
