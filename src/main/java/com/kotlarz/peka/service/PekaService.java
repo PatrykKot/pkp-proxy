@@ -14,36 +14,49 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Bean
-public class PekaService {
+public class PekaService
+{
     private PekaAdapterService pekaAdapterService;
 
     @Inject
-    public PekaService(PekaAdapterService pekaAdapterService) {
+    public PekaService( PekaAdapterService pekaAdapterService )
+    {
         this.pekaAdapterService = pekaAdapterService;
     }
 
-    public List<Stop> getStops(String namePattern) {
+    public List<Stop> getStops( String namePattern )
+    {
         return pekaAdapterService.getStopPointsByName( namePattern ).stream()
-                .map(Stop::from)
-                .collect(Collectors.toList());
+                        .map( Stop::from )
+                        .collect( Collectors.toList() );
     }
 
-    public List<Bollard> getBollards(String stopName) {
-        Optional<Stop> optionalStop = getStops( stopName ).stream()
-                        .min( Comparator.comparing( stop -> Levenshtein.calculate( stop.getName(), stopName ) ) );
+    public List<Bollard> getBollards( String stopName )
+    {
+        String convertedStopName = stopName
+                        .toLowerCase()
+                        .trim()
+                        .replaceAll( "\\/$", "" );
+
+        Optional<Stop> optionalStop = getStops( convertedStopName ).stream()
+                        .min( Comparator.comparing(
+                                        stop -> Levenshtein.calculate( stop.getName(), convertedStopName ) ) );
 
         if ( optionalStop.isPresent() )
         {
             Stop stop = optionalStop.get();
             return this.pekaAdapterService.getBollardsByStopPoint( stop.getName() ).stream()
-                    .map(Bollard::from)
-                    .collect(Collectors.toList());
-        } else {
+                            .map( Bollard::from )
+                            .collect( Collectors.toList() );
+        }
+        else
+        {
             return new LinkedList<>();
         }
     }
 
-    public List<Time> getTimes(String bollardTag) {
+    public List<Time> getTimes( String bollardTag )
+    {
         return Time.from( pekaAdapterService.getTimesByBollard( bollardTag ) );
     }
 
