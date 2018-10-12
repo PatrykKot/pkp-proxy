@@ -11,42 +11,46 @@ import javax.inject.Inject;
 
 @Bean
 public class TransportStopHandler
-        implements RequestHandler {
+                implements RequestHandler
+{
     private TransportService transportService;
 
-
     @Inject
-    public TransportStopHandler(TransportService transportService) {
+    public TransportStopHandler( TransportService transportService )
+    {
         this.transportService = transportService;
     }
 
     @Override
-    public void register(Service service) {
-        registerGetAllStops(service);
-        registerGetClosestStops(service);
+    public void register( Service service )
+    {
+        registerGetAllStops( service );
+        registerGetClosestStops( service );
     }
 
-    private void registerGetAllStops(Service service) {
-        service.get("stops", (request, response) -> {
-            HandlerUtils.asJson(response);
-            return HandlerUtils.toJson(transportService.getAllStops());
-        });
+    private void registerGetAllStops( Service service )
+    {
+        service.get( "stops", ( request, response ) -> {
+            HandlerUtils.asJson( response );
+            return HandlerUtils.toJson( transportService.getAllStops() );
+        } );
     }
 
-    private void registerGetClosestStops(Service service) {
-        service.get("stops/closest", (request, response) -> {
-            String longitude = request.queryParams("lon");
-            String latitude = request.queryParams("lat");
-            String limit = request.queryParams("limit");
+    private void registerGetClosestStops( Service service )
+    {
+        service.get( "stops/closest", ( request, response ) -> {
+            String longitude = request.queryParams( "longitude" );
+            String latitude = request.queryParams( "latitude" );
+            String limit = request.queryParams( "limit" );
 
-            Assert.hasLength(longitude, "Longitude cannot be empty");
-            Assert.hasLength(latitude, "Latidude cannot be empty");
-            Assert.hasLength(limit, "Limit cannot be empty");
+            Assert.hasLength( longitude, "Longitude cannot be empty" );
+            Assert.hasLength( latitude, "Latitude cannot be empty" );
+            Assert.hasLength( limit, "Limit cannot be empty" );
 
-            HandlerUtils.asJson(response);
-            return HandlerUtils.toJson(transportService.getClosest(Double.parseDouble(longitude),
-                    Double.parseDouble(latitude),
-                    Long.parseLong(limit)));
-        });
+            HandlerUtils.asJson( response );
+            return HandlerUtils.toJson( transportService.getClosest( Double.parseDouble( longitude ),
+                                                                     Double.parseDouble( latitude ),
+                                                                     Long.parseLong( limit ) ) );
+        } );
     }
 }
