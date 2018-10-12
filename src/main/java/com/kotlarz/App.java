@@ -51,14 +51,17 @@ public class App
 
     private static void startApplication()
     {
-        log.info( "Creating service" );
-        Service service = ServerServiceInitializer.start();
-
         log.info( "Creating dependency container" );
         Injector injector = Guice.createInjector( new GuiceModule() );
 
+        log.info( "Looking for request handlers" );
+        List<RequestHandler> handlers = getHandlers( injector );
+
+        log.info( "Creating service" );
+        Service service = ServerServiceInitializer.start();
+
         log.info( "Registering request handlers" );
-        getHandlers( injector ).forEach( requestHandler -> {
+        handlers.forEach( requestHandler -> {
             log.info( "Registering handler {}", requestHandler.getClass().getSimpleName() );
             requestHandler.register( service );
         } );

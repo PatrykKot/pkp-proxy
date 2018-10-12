@@ -17,7 +17,7 @@ public class TransportService
     private TransportAdapterService transportAdapterService;
 
     private Supplier<List<TransportStop>> stopsSupplier =
-            Suppliers.memoizeWithExpiration( () -> loadStops(), 1, TimeUnit.DAYS );
+                    Suppliers.memoizeWithExpiration( this::loadStops, 1, TimeUnit.DAYS );
 
     @Inject
     public TransportService(TransportAdapterService transportAdapterService ) {
