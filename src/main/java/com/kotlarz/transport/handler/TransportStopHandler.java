@@ -8,6 +8,7 @@ import spark.Service;
 import spark.utils.Assert;
 
 import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
 @Bean
 public class TransportStopHandler
@@ -30,6 +31,7 @@ public class TransportStopHandler
     private void registerGetAllStops(Service service) {
         service.get("stops", (request, response) -> {
             HandlerUtils.asJson(response);
+            HandlerUtils.cache( response, 1, TimeUnit.DAYS );
             return HandlerUtils.toJson(transportService.getAllStops());
         });
     }
@@ -45,6 +47,7 @@ public class TransportStopHandler
             Assert.hasLength(limit, "Limit cannot be empty");
 
             HandlerUtils.asJson(response);
+            HandlerUtils.cache( response, 1, TimeUnit.DAYS );
             return HandlerUtils.toJson
                     (
                             transportService.getClosest(
@@ -67,6 +70,7 @@ public class TransportStopHandler
             Assert.hasLength(limit, "Limit cannot be empty");
 
             HandlerUtils.asJson(response);
+            HandlerUtils.cache( response, 1, TimeUnit.DAYS );
             return HandlerUtils.toJson
                     (
                             transportService.getClosestNames
@@ -90,6 +94,7 @@ public class TransportStopHandler
             Assert.hasLength(limit, "Limit cannot be empty");
 
             HandlerUtils.asJson(response);
+            HandlerUtils.cache( response, 1, TimeUnit.DAYS );
             return HandlerUtils.toJson
                     (
                             transportService.getClosestGrouped
