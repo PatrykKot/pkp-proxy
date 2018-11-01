@@ -36,7 +36,7 @@ public class PekaHandler
             Assert.hasLength( bollardTag, "Bollard tag cannot be empty" );
 
             HandlerUtils.asJson( response );
-            HandlerUtils.cache( response, 1, TimeUnit.SECONDS );
+            HandlerUtils.cache(response, 5, TimeUnit.SECONDS);
             return HandlerUtils.toJson( pekaService.getTimes( bollardTag ) );
         } );
     }
@@ -48,7 +48,7 @@ public class PekaHandler
             Assert.hasLength( stopName, "Stop name cannot be empty" );
 
             HandlerUtils.asJson( response );
-            HandlerUtils.cache( response, 1, TimeUnit.DAYS );
+            HandlerUtils.cache(response, 5, TimeUnit.MINUTES);
             return HandlerUtils.toJson( pekaService.getBollards( stopName ) );
         } );
     }
