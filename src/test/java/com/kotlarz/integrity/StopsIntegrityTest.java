@@ -10,7 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class StopsIntegrityTest {
@@ -29,13 +31,34 @@ public class StopsIntegrityTest {
     }
 
     @Test
-    public void integrityTest() {
+    public void integrityTest() throws ExecutionException, InterruptedException {
         List<TransportStop> allStops = transportService.getAllStops();
-        List<String> emptyStops = allStops.parallelStream()
+
+        ExecutorService executor = Executors.newFixedThreadPool(allStops.size() / 10);
+        List<Future<String>> futures = allStops.stream()
                 .map(TransportStop::getName)
                 .distinct()
-                .filter(stopName -> pekaService.getBollards(stopName).isEmpty())
+                .map(name -> executor.submit(() -> {
+                    System.out.println("Downloading bollards for stop " + name);
+                    boolean noBollards = pekaService.getBollards(name).isEmpty();
+                    if (noBollards) {
+                        return name;
+                    } else {
+                        return null;
+                    }
+                }))
                 .collect(Collectors.toList());
+
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
+
+        List<String> emptyStops = new LinkedList<>();
+        for (Future<String> future : futures) {
+            String name = future.get();
+            if (name != null) {
+                emptyStops.add(name);
+            }
+        }
 
         System.out.println(emptyStops);
         Double factor = (double) emptyStops.size() / allStops.size() * 100;
