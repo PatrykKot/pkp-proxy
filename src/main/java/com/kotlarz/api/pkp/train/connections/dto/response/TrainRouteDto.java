@@ -14,7 +14,7 @@ public class TrainRouteDto
 {
     private String trainName;
 
-    private String kilometers;
+    private Double kilometers;
 
     private String trainId;
 
@@ -26,7 +26,7 @@ public class TrainRouteDto
     {
         return TrainRouteDto.builder()
                         .trainName( adapterDto.getTrainName() )
-                        .kilometers( adapterDto.getKilometers() )
+                        .kilometers( Double.parseDouble( adapterDto.getKilometers() ) )
                         .trainId( adapterDto.getTrainId() )
                         .carrier( Carrier.fromId( adapterDto.getCarrierId() ) )
                         .trainType( TrainType.fromId( adapterDto.getTrainTypeId() ) )
