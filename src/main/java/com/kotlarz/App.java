@@ -42,7 +42,7 @@ public class App
             Namespace namespace = parser.parseArgs( args );
             AppArguments.KEYSTORE_PATH = namespace.get( "keystore" );
             AppArguments.KEYSTORE_PASSWORD = namespace.get( "password" );
-            AppArguments.PORT = namespace.getInt( "port" );
+            AppArguments.initPort( namespace.get( "port" ) );
 
             handler.run();
         }

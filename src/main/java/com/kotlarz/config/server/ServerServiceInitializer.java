@@ -29,13 +29,13 @@ public class ServerServiceInitializer
         if ( AppArguments.KEYSTORE_PATH != null && AppArguments.KEYSTORE_PASSWORD != null )
         {
             log.info( "Enabling HTTPS" );
-            service.port( 8080 );
+            service.port( AppArguments.PORT );
             service.secure( AppArguments.KEYSTORE_PATH, AppArguments.KEYSTORE_PASSWORD, null, null );
         }
         else
         {
             log.info( "Enabling HTTP" );
-            service.port( 8080 );
+            service.port( AppArguments.PORT );
         }
     }
 
