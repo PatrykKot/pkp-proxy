@@ -7,8 +7,6 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-org.gradle.daemon = false
-
 repositories {
     mavenCentral()
 }

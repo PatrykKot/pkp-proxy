@@ -34,12 +34,15 @@ public class App
                         .help( "Keystore path" );
         parser.addArgument( "-p", "--password" )
                         .help( "Keystore password" );
+        parser.addArgument( "--port" )
+                        .help( "Port (default 8080)" );
 
         try
         {
             Namespace namespace = parser.parseArgs( args );
             AppArguments.KEYSTORE_PATH = namespace.get( "keystore" );
             AppArguments.KEYSTORE_PASSWORD = namespace.get( "password" );
+            AppArguments.PORT = namespace.getInt( "port" );
 
             handler.run();
         }

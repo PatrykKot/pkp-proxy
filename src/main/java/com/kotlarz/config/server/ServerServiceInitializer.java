@@ -29,7 +29,7 @@ public class ServerServiceInitializer
         if ( AppArguments.KEYSTORE_PATH != null && AppArguments.KEYSTORE_PASSWORD != null )
         {
             log.info( "Enabling HTTPS" );
-            service.port( 8443 );
+            service.port( 8080 );
             service.secure( AppArguments.KEYSTORE_PATH, AppArguments.KEYSTORE_PASSWORD, null, null );
         }
         else
