@@ -27,9 +27,9 @@ public class App
 
     private static void parseArgs( String[] args, Runnable handler )
     {
-        ArgumentParser parser = ArgumentParsers.newFor( "Peka / PKP proxy" ).build()
+        ArgumentParser parser = ArgumentParsers.newFor( "PKP proxy" ).build()
                         .defaultHelp( true )
-                        .description( "Proxies requests to PEKA VM / PKP web service" );
+                        .description( "Proxies requests to PKP web service" );
         parser.addArgument( "-k", "--keystore" )
                         .help( "Keystore path" );
         parser.addArgument( "-p", "--password" )
